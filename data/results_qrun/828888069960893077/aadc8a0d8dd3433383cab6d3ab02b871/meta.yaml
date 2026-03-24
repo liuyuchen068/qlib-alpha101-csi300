@@ -1,0 +1,14 @@
+artifact_uri: file:C:/Users/ASUS/Desktop/my-project/data/results_qrun/828888069960893077/aadc8a0d8dd3433383cab6d3ab02b871/artifacts
+end_time: 1774335938967
+entry_point_name: ''
+experiment_id: '828888069960893077'
+lifecycle_stage: active
+run_id: aadc8a0d8dd3433383cab6d3ab02b871
+run_name: mlflow_recorder
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1774335662491
+status: 4
+tags: []
+user_id: ASUS

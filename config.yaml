@@ -1,0 +1,32 @@
+data:
+  qlib_path: ~/Desktop/my-project/data/input/qlib_data
+  my_qlib_path: ~/Desktop/my-project/data/input/my_data
+  input_file: ./data/input/csi300_stocks.csv
+
+date:
+  data_start_date: 2024-12-19
+  data_end_date: 2025-11-25
+  train_start: 2024-12-19
+  train_end: 2025-06-13
+  test_end: 2025-11-24
+  backtest_start: 2025-06-16
+  backtest_end: 2025-11-24
+
+model:
+  alpha_factors: 10
+  loss: mse
+  early_stopping_rounds: 20
+  num_boost_round: 20
+  learning_rate: 0.1
+  num_leaves: 4
+  max_depth: 2
+
+strategy:
+  topk: 20
+  benchmark: SH600000
+  cash_reserve: 0.05     
+  normalize_method: "minmax"
+
+backtest:
+  account: 100000000
+  output_dir: ./data/results_raw

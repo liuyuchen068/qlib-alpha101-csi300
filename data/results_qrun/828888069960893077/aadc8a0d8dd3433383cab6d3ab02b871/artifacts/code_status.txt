@@ -1,0 +1,56 @@
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	../../.Ld9VirtualBox/
+	../../.ai_completion/
+	../../.anaconda/
+	../../.android/
+	../../.bash_history
+	../../.cache/
+	../../.conda/
+	../../.continuum/
+	../../.cursor/
+	../../.gemini/
+	../../.gitconfig
+	../../.idlerc/
+	../../.julia/
+	../../.keras/
+	../../.lesshst
+	../../.matplotlib/
+	../../.ssh/
+	../../.trae-cn/
+	../../.vscode/
+	../../AppData/
+	../../Contacts/
+	../
+	../../Documents/
+	../../Downloads/
+	../../Favorites/
+	../../Figure_1.png
+	../../Links/
+	../../Music/
+	../../NTUSER.DAT
+	../../NTUSER.DAT{c4a2a935-4141-11f0-bec9-ac844bbda284}.TxR.0.regtrans-ms
+	../../NTUSER.DAT{c4a2a935-4141-11f0-bec9-ac844bbda284}.TxR.1.regtrans-ms
+	../../NTUSER.DAT{c4a2a935-4141-11f0-bec9-ac844bbda284}.TxR.2.regtrans-ms
+	../../NTUSER.DAT{c4a2a935-4141-11f0-bec9-ac844bbda284}.TxR.blf
+	../../NTUSER.DAT{c4a2a936-4141-11f0-bec9-ac844bbda284}.TM.blf
+	../../NTUSER.DAT{c4a2a936-4141-11f0-bec9-ac844bbda284}.TMContainer00000000000000000001.regtrans-ms
+	../../NTUSER.DAT{c4a2a936-4141-11f0-bec9-ac844bbda284}.TMContainer00000000000000000002.regtrans-ms
+	../../OneDrive/
+	../../Pictures/
+	../../Saved Games/
+	../../Searches/
+	../../Videos/
+	../../WPS Cloud Files/
+	../../WPSDrive/
+	../../ado/
+	../../ntuser.dat.LOG1
+	../../ntuser.dat.LOG2
+	../../ntuser.ini
+	../../xwechat_files/
+
+nothing added to commit but untracked files present (use "git add" to track)

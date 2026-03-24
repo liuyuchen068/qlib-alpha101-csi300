@@ -1,0 +1,1 @@
+[['$close', '$volume', '$alpha_001', '$alpha_002', '$alpha_003', '$alpha_004', '$alpha_005', '$alpha_006', '$alpha_007', '$alpha_008', '$alpha_009', '$alpha_010'], ['close', 'volume', 'alpha_001', 'alpha_002', 'alpha_003', 'alpha_004', 'alpha_005', 'alpha_006', 'alpha_007', 'alpha_008', 'alpha_009', 'alpha_010']]
