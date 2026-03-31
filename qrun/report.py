@@ -9,3 +9,5 @@ if isinstance(df, pd.DataFrame):
     print("成功转换为 CSV，文件保存为 report.csv")
 else:
     print("读取的对象不是 DataFrame，类型为：", type(df))
+    
+# todo: 这是干什么的？？：此代码为了查看回测结果，通过qrun指令之后，回测结果会保存在pkl文件中，通过此代码转换为csv文件方便查阅。

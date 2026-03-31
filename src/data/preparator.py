@@ -44,6 +44,76 @@ class DataPreparator:
     def get_previous_close(self, df_close: pd.DataFrame) -> dict:
         return dict(zip(df_close['code'], df_close['close']))
 
+    def _validate_and_fill_missing(self,df_price: pd.DataFrame,stocks: list,date_str: str) -> pd.DataFrame:
+        """
+        独立的缺失值与异常值检测步骤。
+        - 缺失股票：补全占位行（全 NaN），并记录
+        - 异常数据：价格<=0、volume<0 等，并记录
+        返回补全后的 df_price。
+        """
+        # ── 1. 检测缺失股票 ──────────────────────────────────────
+        actual_codes = set(df_price['code'].unique())
+        all_codes = set(stocks)
+        missing_codes = all_codes - actual_codes
+
+        if missing_codes:
+        # 记录缺失，防止原始数据问题被吞
+            self.logger.warning(
+                f"[DATA QUALITY] {date_str} 缺失 {len(missing_codes)} 只股票行情: "
+                f"{sorted(missing_codes)}"
+            )
+            self._append_data_quality_log(date_str, "missing", list(missing_codes))  #记录缺失值数据
+
+            missing_rows = [
+                {
+                 'code': code,
+                    'open': np.nan,
+                    'close': np.nan,
+                    'high': np.nan,
+                    'low': np.nan,
+                    'volume': 0,
+                    'money': 0,
+                    'time': pd.to_datetime(date_str)
+                }
+                for code in missing_codes
+            ]
+            df_price = pd.concat([df_price, pd.DataFrame(missing_rows)],ignore_index=True)
+
+    # ── 2. 检测异常数据 ──────────────────────────────────────
+        anomaly_checks = {
+        'open':   lambda x: x <= 0,
+        'close':  lambda x: x <= 0,
+        'high':   lambda x: x <= 0,
+        'low':    lambda x: x <= 0,
+        'volume': lambda x: x < 0,   # 0 合法（停牌），负数才是异常
+        'money':  lambda x: x < 0,
+        }
+
+        for col, is_anomaly in anomaly_checks.items():
+            anomalies = df_price.loc[
+                df_price[col].notna() & is_anomaly(df_price[col]), 'code'
+            ].tolist()
+            if anomalies:
+                self.logger.warning(
+                   f"[DATA QUALITY] {date_str} 字段 {col} 存在异常值: {anomalies}"
+                )
+                self._append_data_quality_log(date_str, f"anomaly_{col}", anomalies)
+
+        return df_price
+
+
+    def _append_data_quality_log(self,date_str: str,issue_type: str,codes: list):
+        """
+        记录缺失值和异常值到 CSV 文件。
+        """
+        log_path = self.qlib_output_dir.parent / "data_quality_log.csv"  #将缺失值保存在“~/Desktop/my-project/data/input/”上
+        rows = pd.DataFrame({
+            "date": date_str,
+            "issue_type": issue_type,
+            "code": codes
+        })
+        rows.to_csv(log_path,mode='a',header=not log_path.exists(),index=False)
+
     def fetch_daily_data(self, date_str: str, prev_close_dict: Optional[dict] = None) -> Optional[pd.DataFrame]:
         """获取单日沪深300成分股的行情 + Alpha因子"""
         if prev_close_dict is None:
@@ -75,28 +145,7 @@ class DataPreparator:
                 return None
 
             # 处理缺失行，检查无缺失
-            actual_codes = set(df_price['code'].unique())
-            all_codes = set(stocks)
-            missing_codes = all_codes - actual_codes
-
-            # 处理缺失行
-            if missing_codes:
-                missing_rows = []
-                for code in missing_codes:
-                    missing_rows.append({
-                        'code': code,
-                        'open': np.nan,
-                        'close': np.nan,
-                        'high': np.nan,
-                        'low': np.nan,
-                        'volume': 0,
-                        'money': 0,
-                        'time': pd.to_datetime(date_str)
-                    })
-
-                df_missing = pd.DataFrame(missing_rows)
-                df_price = pd.concat([df_price, df_missing], ignore_index=True)
-                self.logger.debug(f"{date_str} 添加了 {len(missing_rows)} 行缺失数据")
+            df_price = self._validate_and_fill_missing(df_price, stocks, date_str)
 
             # 处理ST列
             df_st = get_extras('is_st', security_list=stocks, start_date=date_str, end_date=date_str, df=True)
@@ -119,7 +168,7 @@ class DataPreparator:
                 if code not in prev_close_dict:
                     prev_close_dict[code] = 0
 
-            # 添加风险标志列
+            # 添加停牌、涨跌停列
             df_price = add_risk_flags(df_price, prev_close_dict)
 
             # 逐个添加 Alpha101 因子

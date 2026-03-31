@@ -1,7 +1,13 @@
+# todo：这是一个非常好的文件。我建议你详细展开说说这个配置文件的优劣。
+#优点：开箱即用，无需手动处理数据、模型训练、回测等流程，工作量较小。
+#缺点：灵活性较低，自定义化弱，如果采用复杂的交易策略，需要手动配置；输出存在临时文件和日志，需要手动清理，并需要将pkl文件转换为csv文件。
+
+#Qlib 的 系统配置 ，告诉 Qlib 从当前目录找 自定义模块
 sys:
   rel_path:
     - ./
 
+#初始化部分
 qlib_init:
   provider_uri: ./data/input/qlib_data
   region: cn
@@ -11,9 +17,9 @@ qlib_init:
     kwargs:
       uri: "file:./data/results_qrun"
       default_exp_name: "qlib_experiment"
-
+#基准配置
 benchmark: &benchmark SH600000
-
+#时间与股票集
 data_handler_config: &data_handler_config
     start_time: 2024-12-19
     end_time: 2025-11-25
@@ -22,7 +28,7 @@ data_handler_config: &data_handler_config
     instruments:
       market: csi300
       filter_pipe: []
-
+#定义回测策略（回测策略需要自己写一个py文件）
 port_analysis_config: &port_analysis_config
   strategy:
     class: ScoreWeightedStrategy
@@ -32,7 +38,7 @@ port_analysis_config: &port_analysis_config
         topk: 20
         cash_reserve: 0.05
         normalize_method: "minmax"
-
+#执行回测，定义回测参数
   backtest:
     start_time: 2025-06-16
     end_time: 2025-11-24
@@ -43,7 +49,7 @@ port_analysis_config: &port_analysis_config
         open_cost: 0.00005
         close_cost: 0.00015
         min_cost: 5
-
+#  定义模型参数
 task:
   model:
     class: LGBModel
@@ -56,7 +62,7 @@ task:
         num_leaves: 16
         max_depth: 4
         num_threads: 1
-
+#定义数据集生成参数并划分训练集和测试集
   dataset:
     class: DatasetH
     module_path: qlib.data.dataset
@@ -94,7 +100,7 @@ task:
             train: [2024-12-19, 2025-06-13]
             valid: [2024-12-19, 2025-06-13]
             test: [2025-06-16, 2025-11-24]
-
+#打印输出结果
   record:
     - class: SignalRecord
       module_path: qlib.workflow.record_temp

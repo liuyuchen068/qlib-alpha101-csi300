@@ -4,6 +4,7 @@ import pandas as pd
 
 def get_trade_dates(start_date: str, end_date: str) -> list:
     """获取指定区间内的所有交易日"""
+    # fixme 工作日就是交易日吗？：在此代码中，通过a_trade_calendar库获取交易日历（12行atc命令）
     all_dates = pd.date_range(start=start_date, end=end_date, freq='D')
     return [
         date.strftime('%Y-%m-%d')

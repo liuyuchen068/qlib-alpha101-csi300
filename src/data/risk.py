@@ -6,7 +6,8 @@ logger = logging.getLogger(__name__)
 
 
 def add_risk_flags(df_price: pd.DataFrame, prev_close_dict: dict) -> pd.DataFrame:
-    """添加风险标志列"""
+    """添加停牌、涨跌停标志列"""
+    # fixme 什么是风险标志啊？：这里的风险标志是指停牌、涨跌停
     date_str = df_price['date'].iloc[0].replace("-", "")
     df = ak.stock_tfp_em(date=date_str)
     df_zt = ak.stock_zt_pool_em(date=date_str)

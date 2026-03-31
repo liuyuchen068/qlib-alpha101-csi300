@@ -36,16 +36,10 @@ class ScoreWeightedStrategy(WeightStrategyBase):
             except:
                 pass
 
-        score = score.drop(exclude_codes, errors="ignore")
+        valid_score = score[~score.index.isin(exclude_codes)]
 
-        # 确保 score 是 Series
-        if isinstance(score, pd.DataFrame):
-            score = score.iloc[:, 0]
 
-        # 确保 score 是数值类型
-        score = score.astype(float)
-
-        topk_scores = score.nlargest(self.topk)
+        topk_scores = valid_score.nlargest(self.topk)
         if len(topk_scores) == 0:
             return {}
 

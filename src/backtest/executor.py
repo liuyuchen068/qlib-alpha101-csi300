@@ -17,6 +17,7 @@ class BacktestExecutor:
         self.config = config
 
     def create_strategy_config(self, predictions: pd.Series) -> dict:
+        # fixme： 我在全局中没有搜索到任何一个地方使用这个函数？什么意思？：应该是在src/pipelines/backtest_pipeline.py中使用,上次提交版本存在问题，已经补上了
         return {
             "class": "ScoreWeightedStrategy",
             "module_path": "src.strategy.score_strategy",
@@ -46,6 +47,7 @@ class BacktestExecutor:
         logger.info("回测执行完成")
         return report, positions
 
+    # todo 同样搜不到：应该是在src/pipelines/backtest_pipeline.py中使用,上次提交版本存在问题，已经补上了
     def save_results(self, report: pd.DataFrame, positions: dict | None):
         output_dir = Path(self.config.backtest["output_dir"])
 
