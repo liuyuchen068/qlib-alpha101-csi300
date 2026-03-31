@@ -5,21 +5,29 @@ data:
 
 date:
   data_start_date: 2024-12-19
-  data_end_date: 2025-11-25
+  data_end_date: 2025-11-24
   train_start: 2024-12-19
   train_end: 2025-06-13
   test_end: 2025-11-24
   backtest_start: 2025-06-16
   backtest_end: 2025-11-24
 
+feature:
+  basic_cols: |
+    open
+    close
+    high
+    low
+    volume
+  
 model:
   alpha_factors: 10
   loss: mse
-  early_stopping_rounds: 20
-  num_boost_round: 20
-  learning_rate: 0.1
-  num_leaves: 4
-  max_depth: 2
+  early_stopping_rounds: 50
+  num_boost_round: 300
+  learning_rate: 0.05
+  num_leaves: 16
+  max_depth: 4
 
 strategy:
   topk: 20

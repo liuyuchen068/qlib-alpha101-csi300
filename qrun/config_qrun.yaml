@@ -1,0 +1,105 @@
+sys:
+  rel_path:
+    - ./
+
+qlib_init:
+  provider_uri: ./data/input/qlib_data
+  region: cn
+  exp_manager:
+    class: MLflowExpManager
+    module_path: qlib.workflow.expm
+    kwargs:
+      uri: "file:./data/results_qrun"
+      default_exp_name: "qlib_experiment"
+
+benchmark: &benchmark SH600000
+
+data_handler_config: &data_handler_config
+    start_time: 2024-12-19
+    end_time: 2025-11-25
+    fit_start_time: 2024-12-19
+    fit_end_time: 2025-06-13
+    instruments:
+      market: csi300
+      filter_pipe: []
+
+port_analysis_config: &port_analysis_config
+  strategy:
+    class: ScoreWeightedStrategy
+    module_path: workflow_qrun
+    kwargs:
+        signal: <PRED>
+        topk: 20
+        cash_reserve: 0.05
+        normalize_method: "minmax"
+
+  backtest:
+    start_time: 2025-06-16
+    end_time: 2025-11-24
+    account: 100000000
+    benchmark: *benchmark
+    exchange_kwargs:
+        deal_price: close
+        open_cost: 0.00005
+        close_cost: 0.00015
+        min_cost: 5
+
+task:
+  model:
+    class: LGBModel
+    module_path: qlib.contrib.model.gbdt
+    kwargs:
+        loss: mse
+        early_stopping_rounds: 50
+        num_boost_round: 300
+        learning_rate: 0.05
+        num_leaves: 16
+        max_depth: 4
+        num_threads: 1
+
+  dataset:
+    class: DatasetH
+    module_path: qlib.data.dataset
+    kwargs:
+        handler:
+          class: DataHandlerLP
+          module_path: qlib.data.dataset.handler
+          kwargs:
+            instruments:
+              market: csi300
+              filter_pipe: []
+            start_time: 2024-12-19
+            end_time: 2025-11-25
+            infer_processors:
+              - class: Fillna
+                kwargs:
+                  fields_group: feature
+            learn_processors:
+              - class: DropnaLabel
+                kwargs: {}
+            data_loader:
+              class: QlibDataLoader
+              module_path: qlib.data.dataset.loader
+              kwargs:
+                config:
+                    feature:
+                        - ["$close", "$volume", "$alpha_001", "$alpha_002", "$alpha_003", "$alpha_004", "$alpha_005", "$alpha_006", "$alpha_007", "$alpha_008", "$alpha_009", "$alpha_010"]
+                        - ["close", "volume", "alpha_001", "alpha_002", "alpha_003", "alpha_004", "alpha_005", "alpha_006", "alpha_007", "alpha_008", "alpha_009", "alpha_010"]
+                    label:
+                        - ["Ref($close, -2)/Ref($close, -1) - 1"]
+                        - ["LABEL"]
+
+
+        segments:
+            train: [2024-12-19, 2025-06-13]
+            valid: [2024-12-19, 2025-06-13]
+            test: [2025-06-16, 2025-11-24]
+
+  record:
+    - class: SignalRecord
+      module_path: qlib.workflow.record_temp
+      kwargs: {}
+    - class: PortAnaRecord
+      module_path: qlib.workflow.record_temp
+      kwargs:
+          config: *port_analysis_config
