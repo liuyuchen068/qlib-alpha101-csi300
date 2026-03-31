@@ -65,15 +65,17 @@ src/
 scripts/               # 命令行入口
 ├── run_data.py
 └── run_backtest.py
+```
 
 ✨ **方案二(qrun/)**
+
 ```
 qrun/
 ├── config_qrun.yaml      # 配置文件
 ├── run_qrun.py          # 运行脚本
 ├── workflow_qrun.py     # 自定义策略
 └── report.csv           # 回测结果报告
-`````
+```
 
 ---
 
